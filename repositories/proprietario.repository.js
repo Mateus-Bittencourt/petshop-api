@@ -1,9 +1,10 @@
 import db from "./db.js";
 
 const insertProprietario = async (proprietario) => {
+  const conn = await db.connect();
   try {
-    const conn = await db.connect();
-    const sql = "INSERT INTO proprietarios (nome, telefone) VALUES ($1, $2)";
+    const sql =
+      "INSERT INTO proprietarios (nome, telefone) VALUES ($1, $2) RETURNING *";
     const values = [proprietario.nome, proprietario.telefone];
 
     const res = await conn.query(sql, values);
@@ -16,8 +17,8 @@ const insertProprietario = async (proprietario) => {
 };
 
 const getProprietarios = async () => {
+  const conn = await db.connect();
   try {
-    const conn = await db.connect();
     const res = await conn.query("SELECT * FROM proprietarios");
     return res.rows;
   } catch (error) {
@@ -28,9 +29,9 @@ const getProprietarios = async () => {
 };
 
 const getProprietario = async (id) => {
+  const conn = await db.connect();
   try {
-    const conn = await db.connect();
-    const res = await conn.sql(
+    const res = await conn.query(
       "SELECT * FROM proprietarios WHERE proprietario_id = $1",
       [id]
     );
@@ -43,11 +44,15 @@ const getProprietario = async (id) => {
 };
 
 const updateProprietario = async (proprietario) => {
+  const conn = await db.connect();
   try {
-    const conn = await db.connect();
     const sql =
-      "UPDATE proprietarios SET nome = $1, telefone = $2 WHERE proprietario_id = $3";
-    const values = [proprietario.nome, proprietario.telefone, proprietario.id];
+      "UPDATE proprietarios SET nome = $1, telefone = $2 WHERE proprietario_id = $3 RETURNING *";
+    const values = [
+      proprietario.nome,
+      proprietario.telefone,
+      proprietario.proprietario_id,
+    ];
     const res = await conn.query(sql, values);
     return res.rows[0];
   } catch (error) {
@@ -58,8 +63,8 @@ const updateProprietario = async (proprietario) => {
 };
 
 const deleteProprietario = async (id) => {
+  const conn = await db.connect();
   try {
-    const conn = await db.connect();
     const res = await conn.query(
       "DELETE FROM proprietarios WHERE proprietario_id = $1",
       [id]
@@ -70,4 +75,12 @@ const deleteProprietario = async (id) => {
   } finally {
     conn.release();
   }
+};
+
+export default {
+  insertProprietario,
+  getProprietarios,
+  getProprietario,
+  updateProprietario,
+  deleteProprietario,
 };
