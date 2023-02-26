@@ -15,7 +15,7 @@ const createAnimal = async (req, res, next) => {
 
 const getAnimais = async (req, res, next) => {
   try {
-    res.send(await AnimalService.getAnimais(req.query.product_id));
+    res.send(await AnimalService.getAnimais(req.query.proprietario_id));
     logger.info("GET /animal");
   } catch (error) {
     next(error);
