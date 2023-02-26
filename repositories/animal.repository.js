@@ -19,7 +19,9 @@ const insertAnimal = async (animal) => {
 const getAnimais = async () => {
   const conn = await db.connect();
   try {
-    const res = await conn.query("SELECT * FROM animais");
+    const res = await conn.query(
+      "SELECT animais.*, proprietarios.nome AS proprietario_nome, proprietarios.telefone AS proprietario_telefone FROM animais INNER JOIN proprietarios ON animais.proprietario_id = proprietarios.proprietario_id"
+    );
     return res.rows;
   } catch (error) {
     throw error;

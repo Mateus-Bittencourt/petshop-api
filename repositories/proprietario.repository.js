@@ -43,6 +43,21 @@ const getProprietario = async (id) => {
   }
 };
 
+const getProprietarioByAnimalId = async (animalId) => {
+  const conn = await db.connect();
+  try {
+    const res = await conn.query(
+      "SELECT proprietarios.* FROM animais INNER JOIN proprietarios ON animais.proprietario_id = proprietarios.proprietario_id WHERE animais.animal_id = $1",
+      [animalId]
+    );
+    return res.rows[0];
+  } catch (error) {
+    throw error;
+  } finally {
+    conn.release();
+  }
+};
+
 const updateProprietario = async (proprietario) => {
   const conn = await db.connect();
   try {
@@ -83,4 +98,5 @@ export default {
   getProprietario,
   updateProprietario,
   deleteProprietario,
+  getProprietarioByAnimalId,
 };

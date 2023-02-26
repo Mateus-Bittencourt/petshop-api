@@ -10,15 +10,35 @@ const createAnimal = async (animal) => {
 };
 
 const getAnimais = async (proprietarioId) => {
-  if (proprietarioId)
-    return await AnimalRepository.getAnimaisByProprietarioId(proprietarioId);
+  if (proprietarioId) {
+    const animais = await AnimalRepository.getAnimaisByProprietarioId(
+      proprietarioId
+    );
+    const proprietario = await ProprietarioRepository.getProprietario(
+      proprietarioId
+    );
+    return {
+      proprietario,
+      aniamis: [...animais],
+    };
+  }
   return await AnimalRepository.getAnimais();
 };
 
 const getAnimal = async (id) => {
   const animal = await AnimalRepository.getAnimal(id);
   if (!animal) throw new Error("Animal não encontrado");
-  return animal;
+  const proprietario = await ProprietarioRepository.getProprietarioByAnimalId(
+    animal.animal_id
+  );
+  return {
+    animal_id: animal.animal_id,
+    nome: animal.nome,
+    tipo: animal.tipo,
+    proprietario: {
+      ...proprietario,
+    },
+  };
 };
 
 const deleteAnimal = async (id) => {
